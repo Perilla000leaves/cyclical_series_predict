@@ -4,11 +4,11 @@
 '''
 import os
 import numpy as np
-from test_stationarity import *
+from test.test_stationarity import *
 from statsmodels.tsa.seasonal import seasonal_decompose
 from statsmodels.tsa.arima_model import ARIMA
 from datetime import timedelta
-os.chdir(os.getcwd()+'/data')
+os.chdir(os.getcwd())
 
 
 class ModelDecomp(object):
@@ -26,7 +26,7 @@ class ModelDecomp(object):
         data = data.set_index('date')
         data.index = pd.to_datetime(data.index)
         ts = data['count']
-        draw_ts(ts)
+        #draw_ts(ts)
         return ts
 
     def _diff_smooth(self, ts):
@@ -90,9 +90,7 @@ class ModelDecomp(object):
             trend_part = self.trend_pred[i]
 
             # 相同时间的数据均值
-            season_part = self.train_season[
-                self.train_season.index.time == t.time()
-                ].mean()
+            season_part = self.train_season[self.train_season.index.time == t.time()].mean()
 
             # 趋势+周期+误差界限
             predict = trend_part + season_part
@@ -124,22 +122,22 @@ def evaluate(filename):
     md.decomp(freq=1440)
     md.trend_model(order=(1, 1, 3))
     md.predict_new()
-    pred = md.final_pred
-    test = md.test
+#    pred = md.final_pred
+#    test = md.test
 
-    plt.subplot(211)
-    plt.plot(md.ts)
-    plt.title(filename.split('.')[0])
-    plt.subplot(212)
-    pred.plot(color='salmon', label='Predict')
-    test.plot(color='steelblue', label='Original')
-    md.low_conf.plot(color='grey', label='low')
-    md.high_conf.plot(color='grey', label='high')
+#    plt.subplot(211)
+#    plt.plot(md.ts)
+#    plt.title(filename.split('.')[0])
+#    plt.subplot(212)
+#    pred.plot(color='salmon', label='Predict')
+#    test.plot(color='steelblue', label='Original')
+#    md.low_conf.plot(color='grey', label='low')
+#    md.high_conf.plot(color='grey', label='high')
 
-    plt.legend(loc='best')
-    plt.title('RMSE: %.4f' % np.sqrt(sum((pred.values - test.values) ** 2) / test.size))
-    plt.tight_layout()
-    plt.show()
+#    plt.legend(loc='best')
+#    plt.title('RMSE: %.4f' % np.sqrt(sum((pred.values - test.values) ** 2) / test.size))
+#    plt.tight_layout()
+#    plt.show()
 
 
 if __name__ == '__main__':
